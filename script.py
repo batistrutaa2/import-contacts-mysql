@@ -70,34 +70,26 @@ if response.status_code == 200:
                         user_import_id,
                         is_ads,
                         tipo_criativo,
-                        data_inscricao,
                         nome_base,
                         status,
                         nome_cliente,
-                        data_nascimento,
-                        cpf,
-                        plano,
-                        categoria,
-                        entidade,
                         telefone1,
-                        telefone2,
-                        telefone3,
                         email,
-                        idades,
-                        plano_ativo,
-                        vidas,
-                        valor_plano_atual,
-                        valor_negociacao,
                         created_at,
-                        updated_at
-                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-                """, (
+                        updated_at                 
+                    ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
                     id_operacao,
                     2,
                     1,
                     "Y",
                     item.get('CRIATIVO', ''),
-                    
+                    "LAKS ANUNCIO META ADS",
+                    "Y",
+                    item.get('NOME', ''),
+                    item.get('TELEFONE', ''),
+                    item.get('EMAIL', ''),
+                    datetime.now(),
+                    datetime.now(),
                 ))
                 
                 # Logar sucesso
