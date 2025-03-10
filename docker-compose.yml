@@ -1,0 +1,18 @@
+version: "3.8"
+
+services:
+  python:
+    build: .
+    container_name: python-container
+    environment:
+      DB_HOST: mysql # Nome do serviço MySQL no Docker Compose (mesmo nome usado no container Laravel)
+      DB_USER: root
+      DB_PASSWORD: "" # Senha do banco de dados, se aplicável
+      DB_NAME: salescontrol-new # Nome do banco de dados
+    networks:
+      - salescontrol-new_sail # Rede correta para o MySQL do Laravel
+    restart: always
+
+networks:
+  salescontrol-new_sail:
+    external: true # Usando a rede externa já existente
