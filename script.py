@@ -20,16 +20,16 @@ def generate_unique_id():
 
 # Configuração do banco de dados a partir do .env
 db_config = {
-    'host': os.getenv('DB_HOST', 'localhost'),
-    'user': os.getenv('DB_USER', 'root'),
+    'host': os.getenv('DB_HOST', ''),
+    'user': os.getenv('DB_USER', ''),
     'password': os.getenv('DB_PASSWORD', ''),
-    'database': os.getenv('DB_NAME', 'salescontrol-new')
+    'database': os.getenv('DB_NAME', '')
 }
 
 # URLs das planilhas
 planilhas = [
-    "https://docs.google.com/spreadsheets/d/1glvrd-KpY9p3OvsuY1YC7TRaN3BdTTeu1e0AfiSfDRU/gviz/tq?tqx=out:csv&gid=806051143",
-    "https://docs.google.com/spreadsheets/d/1glvrd-KpY9p3OvsuY1YC7TRaN3BdTTeu1e0AfiSfDRU/gviz/tq?tqx=out:csv&gid=682208985"
+    os.getenv('PL1', ''),
+    os.getenv('PL2', '')
 ]
 
 def processar_planilha(url):
