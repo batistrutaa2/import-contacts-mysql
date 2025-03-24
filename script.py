@@ -48,47 +48,86 @@ def processar_planilha(url):
             for item in results:
                 try:
                     id_operacao = generate_unique_id()
+                    telefone = item.get('TELEFONE', '')
+                    # Verificar se o cliente já existe
                     cursor.execute("""
-                        SELECT 1 FROM contatos WHERE telefone1 = %s AND empresa_id = 2 AND is_ads = 'Y' LIMIT 1
-                    """, (item.get('TELEFONE', ''),))
+                        SELECT id FROM contatos WHERE telefone1 = %s AND empresa_id = 2 AND is_ads = 'Y' LIMIT 1
+                    """, (telefone,))
                     
-                    if cursor.fetchone():
-                        print(f"Cliente {item.get('TELEFONE', '')} já existe. Ignorando inserção.")
-                        continue
+                    existing_client = cursor.fetchone()
+
+                    plano_ativo = 'Y' if item.get('POSSUI PLANO', '').strip().lower() == 'sim' else 'N'
+                    possui_cnpj = 'Y' if item.get('TEM CNPJ', '').strip().lower() == 'sim' else 'N'
+
                     
-                    cursor.execute(""" 
-                        INSERT INTO contatos (
+                    if existing_client:
+                        # O cliente já existe, então vamos atualizar os dados
+                        client_id = existing_client[0]
+                        cursor.execute("""
+                            UPDATE contatos
+                            SET 
+                                tipo_criativo = %s,
+                                nome_base = %s,
+                                status = %s,
+                                nome_cliente = %s,
+                                email = %s,
+                                vidas = %s,
+                                plano_ativo = %s,
+                                possui_cnpj = %s,   
+                                updated_at = %s
+                            WHERE id = %s
+                        """, (
+                            item.get('CRIATIVO', ''),
+                            "LAKS ANUNCIO META ADS",
+                            "Y",
+                            item.get('NOME', ''),
+                            item.get('EMAIL', ''),
+                            item.get('VIDAS'),
+                            plano_ativo,
+                            possui_cnpj,
+                            datetime.now(),
+                            client_id
+                        ))
+                        print(f"Dados do cliente {telefone} atualizados com sucesso!")
+                    else:
+                        # Cliente não encontrado, vamos inserir os dados
+                        cursor.execute(""" 
+                            INSERT INTO contatos (
+                                id_operacao,
+                                empresa_id,
+                                user_import_id,
+                                is_ads,
+                                tipo_criativo,
+                                nome_base,
+                                status,
+                                nome_cliente,
+                                telefone1,
+                                email,
+                                vidas,
+                                plano_ativo,
+                                possui_cnpj,         
+                                created_at,
+                                updated_at                 
+                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
                             id_operacao,
-                            empresa_id,
-                            user_import_id,
-                            is_ads,
-                            tipo_criativo,
-                            nome_base,
-                            status,
-                            nome_cliente,
-                            telefone1,
-                            email,
-                            vidas,        
-                            created_at,
-                            updated_at                 
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
-                        id_operacao,
-                        2,
-                        1,
-                        "Y",
-                        item.get('CRIATIVO', ''),
-                        "LAKS ANUNCIO META ADS",
-                        "Y",
-                        item.get('NOME', ''),
-                        item.get('TELEFONE', ''),
-                        item.get('EMAIL', ''),
-                        item.get('VIDAS'),
-                        datetime.now(),
-                        datetime.now(),
-                    ))
-                    print(f"Dados do cliente {item.get('TELEFONE', '')} inseridos com sucesso!")
+                            2,
+                            1,
+                            "Y",
+                            item.get('CRIATIVO', ''),
+                            "LAKS ANUNCIO META ADS",
+                            "Y",
+                            item.get('NOME', ''),
+                            telefone,
+                            item.get('EMAIL', ''),
+                            item.get('VIDAS'),
+                            plano_ativo,
+                            possui_cnpj,
+                            datetime.now(),
+                            datetime.now(),
+                        ))
+                        print(f"Dados do cliente {telefone} inseridos com sucesso!")
                 except mysql.connector.Error as db_error:
-                    print(f"Erro ao inserir o cliente {item.get('TELEFONE', '')}: {db_error}")
+                    print(f"Erro ao processar o cliente {item.get('TELEFONE', '')}: {db_error}")
                     conn.rollback()
             conn.commit()
         except mysql.connector.Error as db_error:
@@ -96,7 +135,7 @@ def processar_planilha(url):
         finally:
             cursor.close()
             conn.close()
-        print("\n✅ Dados inseridos no banco com sucesso!")
+        print("\n✅ Dados processados com sucesso!")
     else:
         print(f"❌ Erro ao acessar a planilha! Código HTTP: {response.status_code}")
 
