@@ -68,9 +68,10 @@ def processar_planilha(url):
                             nome_cliente,
                             telefone1,
                             email,
+                            vidas,        
                             created_at,
                             updated_at                 
-                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
+                        ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
                         id_operacao,
                         2,
                         1,
@@ -81,6 +82,7 @@ def processar_planilha(url):
                         item.get('NOME', ''),
                         item.get('TELEFONE', ''),
                         item.get('EMAIL', ''),
+                        item.get('VIDAS'),
                         datetime.now(),
                         datetime.now(),
                     ))
