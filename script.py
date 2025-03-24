@@ -57,7 +57,7 @@ def processar_planilha(url):
                     existing_client = cursor.fetchone()
 
                     plano_ativo = 'Y' if item.get('POSSUI PLANO', '').strip().lower() == 'sim' else 'N'
-                    possui_cnpj = 'Y' if item.get('TEM CNPJ', '').strip().lower() == 'sim' else 'N'
+                    possui_cnpj = 'Y' if item.get('TEM CNPJ', '').strip().lower() in ['CNPJ', 'MEI', 'sim'] else 'N'
 
                     
                     if existing_client:
