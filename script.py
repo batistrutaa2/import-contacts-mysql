@@ -59,7 +59,8 @@ def processar_planilha(url):
                     plano_ativo = 'Y' if item.get('POSSUI PLANO', '').strip().lower() == 'sim' else 'N'
                     possui_cnpj = 'Y' if item.get('TEM CNPJ', '').strip().lower() in ['CNPJ', 'MEI', 'sim'] else 'N'
 
-                    
+                    user_import_id = 1  # Defina este valor conforme necessário
+
                     if existing_client:
                         # O cliente já existe, então vamos atualizar os dados
                         client_id = existing_client[0]
@@ -107,11 +108,11 @@ def processar_planilha(url):
                                 plano_ativo,
                                 possui_cnpj,         
                                 created_at,
-                                updated_at                 
-                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
+                                updated_at                  
+                            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)""", (
                             id_operacao,
                             2,
-                            1,
+                            user_import_id,  # Definido aqui
                             "Y",
                             item.get('CRIATIVO', ''),
                             "LAKS ANUNCIO META ADS",
